@@ -3,3 +3,6 @@ timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
 2026-05-04T01:46	r1	social-coach	66	72	keep	边界条件	修复首次使用路径+空数据fallback	dry_run
 2026-05-04T01:47	r2	social-coach	72	76	keep	检查点	记录前确认+模拟后确认	dry_run
 2026-05-04T01:48	r3	social-coach	76	79	keep	工作流清晰度	加全局入口流程图	dry_run
+2026-05-04T01:49	r4	social-coach	79	80	keep	Frontmatter	description精简+去指令列表	dry_run
+2026-05-04T01:50	r5	social-coach	80	82	keep	边界条件	异常指令/空输入/写入失败处理	dry_run
+2026-05-04T01:51	r6	social-coach	82	84	keep	指令具体性	破冰输出模板+深度会话输出格式	dry_run
