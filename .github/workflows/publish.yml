@@ -1,0 +1,37 @@
+name: Publish to ClawHub
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'social-coach/**'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install ClawHub CLI
+        run: npm i -g clawhub
+
+      - name: Configure auth
+        run: |
+          mkdir -p ~/.config/clawhub
+          cat > ~/.config/clawhub/config.json << 'EOF'
+          {
+            "registry": "https://clawhub.ai",
+            "token": "${{ secrets.CLAWHUB_TOKEN }}"
+          }
+          EOF
+
+      - name: Validate skill
+        run: clawhub publish social-coach --dry-run
+        continue-on-error: true
+
+      - name: Publish skill
+        run: clawhub publish social-coach
