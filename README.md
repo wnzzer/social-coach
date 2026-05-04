@@ -1,8 +1,13 @@
 # Social Coach 🎯
 
+> 写代码有 Git log，社交为什么没有？
+
 数据驱动的社交成长教练，OpenClaw Agent Skill。
 
 通过记录真实邀约、破冰、会话等数据，帮助用户发现行为模式、识别关键成功/失败因素，迭代社交策略。
+
+**如果你是不善言辞的码农，或者是没有贡献过代码的情场高手——**
+**欢迎贡献代码，重铸荣光。**
 
 ## 特性
 
@@ -36,6 +41,12 @@ clawhub install social-coach
 ## 数据存储
 
 所有用户数据存储在 `~/.openclaw/workspace/memory/social-coach/` 下，完全本地，不上传任何外部服务。
+
+## 贡献指南
+
+PR 即邀约，Commit 即告白。质量越高，通过率越高——跟社交一模一样。
+
+详见 [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
