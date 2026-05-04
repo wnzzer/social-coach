@@ -30,8 +30,8 @@ jobs:
           EOF
 
       - name: Validate skill
-        run: clawhub publish social-coach --dry-run
+        run: clawhub publish ${{ github.workspace }}/social-coach --dry-run
         continue-on-error: true
 
       - name: Publish skill
-        run: clawhub publish social-coach
+        run: clawhub publish ${{ github.workspace }}/social-coach --slug social-coach
