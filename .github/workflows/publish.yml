@@ -28,12 +28,7 @@ jobs:
           }
           EOF
 
-      - name: Extract version from SKILL.md
-        id: version
-        run: |
-          VERSION=$(grep 'version:' SKILL.md 2>/dev/null | head -1 | awk '{print $2}' || echo '1.0.0')
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-        working-directory: social-coach
-
       - name: Publish skill
-        run: clawhub publish ${{ github.workspace }}/social-coach --slug social-coach --version ${{ steps.version.outputs.VERSION }} --changelog "auto publish from ${{ github.sha }}"
+        env:
+          VERSION: "1.0.0"
+        run: clawhub publish ${{ github.workspace }}/social-coach --slug social-coach --version $VERSION --changelog "auto publish from ${{ github.sha }}"
