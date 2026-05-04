@@ -3,8 +3,7 @@ name: Publish to ClawHub
 on:
   push:
     branches: [main]
-    paths:
-      - 'social-coach/**'
+  workflow_dispatch:  # 支持手动触发
 
 jobs:
   publish:
