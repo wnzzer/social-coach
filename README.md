@@ -1,4 +1,4 @@
-# Social Coach 🎯
+# 撩妹 Skill 🎯 *(Social Coach)*
 
 > 写代码有 Git log，社交为什么没有？
 
