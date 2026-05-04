@@ -1,0 +1,5 @@
+timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
+2026-05-04T01:45	baseline	social-coach	-	66	baseline	-	初始评估	dry_run
+2026-05-04T01:46	r1	social-coach	66	72	keep	边界条件	修复首次使用路径+空数据fallback	dry_run
+2026-05-04T01:47	r2	social-coach	72	76	keep	检查点	记录前确认+模拟后确认	dry_run
+2026-05-04T01:48	r3	social-coach	76	79	keep	工作流清晰度	加全局入口流程图	dry_run
