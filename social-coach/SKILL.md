@@ -32,7 +32,21 @@ description: >
 
 ## 数据持久化
 
-所有用户数据存储在 `~/.openclaw/workspace/memory/social-coach/` 目录下：
+### 存储路径（环境自适应）
+
+首次使用时，用 Bash 按以下优先级解析出 `$DATA_DIR`，并 `mkdir -p` 创建：
+
+```bash
+DATA_DIR="${SOCIAL_COACH_DATA:-}"
+[ -z "$DATA_DIR" ] && [ -n "$CLAUDE_PROJECT_DIR" ] && DATA_DIR="$CLAUDE_PROJECT_DIR/.social-coach"
+[ -z "$DATA_DIR" ] && [ -d "$HOME/.openclaw" ] && DATA_DIR="$HOME/.openclaw/workspace/memory/social-coach"
+[ -z "$DATA_DIR" ] && DATA_DIR="$HOME/.social-coach"
+mkdir -p "$DATA_DIR" && echo "DATA_DIR=$DATA_DIR"
+```
+
+把检测出的实际路径告诉用户一次（"数据存储在 `<path>`"），后续所有读写都基于这个路径。
+
+### 文件清单
 
 | 文件 | 用途 |
 |------|------|
@@ -42,11 +56,30 @@ description: >
 | `conversations.jsonl` | 深度会话/模拟记录 |
 | `reviews.jsonl` | 复盘记录 |
 
-**操作规范：**
-- 每次记录指令触发时，自动 append 到对应 JSONL 文件
-- 读取历史数据时，用 `read` 工具读取文件后解析
-- 首次使用时自动创建目录和空文件
-- 永远不要手动输出让用户复制粘贴——直接写入文件
+### 文件操作工具规约（强制）
+
+- **追加 JSONL → 必须用 Bash + `printf` + `>>`**，禁止用 Read+Write 模拟追加（并发/换行/转义易出错）：
+  ```bash
+  printf '%s\n' '{"id":"INV-001",...}' >> "$DATA_DIR/invitations.jsonl"
+  ```
+- **读取 JSONL** → 用 `Read` 工具读全文后逐行 parse。
+- **`profile.json` 写入** → 用 `Write` 工具整体覆盖（非追加）。
+- **绝不**让用户复制粘贴 JSON——所有持久化必须由模型直接执行。
+
+### ID 自增算法
+
+每次写入前，按以下步骤生成 ID（前缀对照：邀约=`INV`、接触=`INT`、会话=`CONV`、复盘=`REV`）：
+
+```bash
+N=$(wc -l < "$DATA_DIR/invitations.jsonl" 2>/dev/null || echo 0)
+ID=$(printf "INV-%03d" $((N+1)))
+```
+
+文件不存在时 N=0，首条 ID 为 `INV-001`。**永远不要凭印象编 ID**。
+
+### 操作规范
+- 记录指令触发时，自动 append 到对应 JSONL
+- 首次使用时自动创建目录和空文件（即按上面的 `mkdir -p` 流程）
 
 **空数据 fallback：**
 - JSONL 文件不存在或为空 → 跳过统计计算，直接告诉用户"还没积累够数据，先把这次记录下来，数据多了分析才准"
