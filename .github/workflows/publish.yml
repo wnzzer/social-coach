@@ -32,4 +32,4 @@ jobs:
       - name: Publish skill
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          clawhub publish ${{ github.workspace }}/social-coach --slug social-coach --version $VERSION --changelog "publish from ${{ github.sha }}"
+          clawhub publish ${{ github.workspace }}/liaomei-skill --slug liaomei-skill --version $VERSION --changelog "publish from ${{ github.sha }}"

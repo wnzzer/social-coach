@@ -1,5 +1,5 @@
 ---
-name: social-coach
+name: liaomei-skill
 description: 写代码有 Git log，社交为什么没有？认真帮你记"失败账"的撩妹脱单 AI 教练，反 PUA。Use when 用户提到 撩妹、追人、约会、搭讪、破冰、邀约、被拒、约会复盘、聊天技巧、情感咨询、对象不回消息、表白、心态崩、暗恋、相亲；或 dating coach、ask out、got rejected、ghosting、cold approach。
 ---
 
@@ -46,29 +46,38 @@ description: 写代码有 Git log，社交为什么没有？认真帮你记"失�
 
 ## 数据持久化
 
-### 存储路径（环境自适应）
+### 存储路径（环境自适应 + v1.x 自动迁移）
 
-首次使用时，用 Bash 按以下优先级解析出 `$DATA_DIR`，并 `mkdir -p` 创建。**OpenClaw（龙虾）是本 skill 的首要目标平台**，因此检测到龙虾环境时直接锁死老路径，保证数据无缝继承：
+首次使用时，用 Bash 按以下顺序：**(1) 自动迁移 v1.x 老数据 → (2) 解析 `$DATA_DIR` → (3) `mkdir -p` 创建**。**OpenClaw（龙虾）是首要目标平台**，检测到龙虾环境时强制走龙虾路径。
 
 ```bash
-DATA_DIR="${SOCIAL_COACH_DATA:-}"
-# OpenClaw/龙虾：clawhub 在 PATH 或 ~/.openclaw 已存在 → 强制走老路径
-[ -z "$DATA_DIR" ] && command -v clawhub >/dev/null 2>&1 && DATA_DIR="$HOME/.openclaw/workspace/memory/social-coach"
-[ -z "$DATA_DIR" ] && [ -d "$HOME/.openclaw" ] && DATA_DIR="$HOME/.openclaw/workspace/memory/social-coach"
+# === v1.x → v2.0+ 自动迁移（一次性，已迁移的不再触发） ===
+OLD_OPENCLAW="$HOME/.openclaw/workspace/memory/social-coach"
+NEW_OPENCLAW="$HOME/.openclaw/workspace/memory/liaomei-skill"
+[ -d "$OLD_OPENCLAW" ] && [ ! -e "$NEW_OPENCLAW" ] && mv "$OLD_OPENCLAW" "$NEW_OPENCLAW" && echo "已自动迁移 v1.x 老数据：$OLD_OPENCLAW → $NEW_OPENCLAW"
+[ -d "$HOME/.social-coach" ] && [ ! -e "$HOME/.liaomei-skill" ] && mv "$HOME/.social-coach" "$HOME/.liaomei-skill" && echo "已自动迁移 v1.x 老数据：~/.social-coach → ~/.liaomei-skill"
+
+# === 路径解析（v2.0+） ===
+DATA_DIR="${LIAOMEI_DATA:-${SOCIAL_COACH_DATA:-}}"  # SOCIAL_COACH_DATA 为 v1.x 兼容
+# OpenClaw/龙虾：clawhub 在 PATH 或 ~/.openclaw 已存在 → 锁定龙虾路径
+[ -z "$DATA_DIR" ] && command -v clawhub >/dev/null 2>&1 && DATA_DIR="$HOME/.openclaw/workspace/memory/liaomei-skill"
+[ -z "$DATA_DIR" ] && [ -d "$HOME/.openclaw" ] && DATA_DIR="$HOME/.openclaw/workspace/memory/liaomei-skill"
 # Claude Code 项目内
-[ -z "$DATA_DIR" ] && [ -n "$CLAUDE_PROJECT_DIR" ] && DATA_DIR="$CLAUDE_PROJECT_DIR/.social-coach"
+[ -z "$DATA_DIR" ] && [ -n "$CLAUDE_PROJECT_DIR" ] && DATA_DIR="$CLAUDE_PROJECT_DIR/.liaomei-skill"
 # 通用 fallback
-[ -z "$DATA_DIR" ] && DATA_DIR="$HOME/.social-coach"
+[ -z "$DATA_DIR" ] && DATA_DIR="$HOME/.liaomei-skill"
 mkdir -p "$DATA_DIR" && echo "DATA_DIR=$DATA_DIR"
 ```
 
 优先级解释：
-- `SOCIAL_COACH_DATA` 环境变量始终最高（用户显式覆盖）
-- 龙虾用户（`clawhub` 命令存在 或 `~/.openclaw` 已存在）→ 100% 走 `~/.openclaw/workspace/memory/social-coach/`，与原版兼容
-- 仅 Claude Code 用户 → 项目隔离的 `$CLAUDE_PROJECT_DIR/.social-coach/`
-- 都不是 → `~/.social-coach/` 通用兜底
+- `LIAOMEI_DATA` / `SOCIAL_COACH_DATA`（v1.x 兼容）环境变量最高
+- 龙虾用户 → `~/.openclaw/workspace/memory/liaomei-skill/`，**v1.x 老数据自动 mv 过来**
+- Claude Code 用户 → `$CLAUDE_PROJECT_DIR/.liaomei-skill/`
+- 通用 → `~/.liaomei-skill/`，**老 `~/.social-coach/` 自动 mv 过来**
 
-把检测出的实际路径告诉用户一次（"数据存储在 `<path>`"），后续所有读写都基于这个路径。
+把检测出的实际路径告诉用户一次（"数据存储在 `<path>`"，迁移过的话也告知"已从老路径迁移"），后续所有读写都基于这个路径。
+
+> **CLAUDE_PROJECT_DIR 老数据**：v1.x 在某个项目目录下用过 `.social-coach/` 的用户，因为项目路径不固定不能自动迁移。如有这种情况，手工 `mv .social-coach .liaomei-skill` 即可，或设 `export LIAOMEI_DATA=$PWD/.social-coach` 继续用老目录。
 
 ### 文件清单
 
@@ -342,7 +351,7 @@ AI 扮演对方进行对话练习。
 
 **🤖 模型（步骤化）：**
 
-1. **Bash 解析 `$DATA_DIR`** 并 `mkdir -p`，告诉用户："数据存储在 `~/.social-coach`"
+1. **Bash 解析 `$DATA_DIR`** 并 `mkdir -p`，告诉用户："数据存储在 `~/.liaomei-skill`"
 2. **Bash 检查 `profile.json` 不存在** → 标记冷启动，先处理指令，最后追加画像邀请
 3. **Bash 算 ID**：`wc -l < $DATA_DIR/invitations.jsonl 2>/dev/null || echo 0` → `0` → 新 ID = `INV-001`
 4. **追问缺失字段**（一次性列齐）：
