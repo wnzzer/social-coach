@@ -32,15 +32,25 @@ description: 数据驱动的社交/恋爱成长教练，记录真实邀约数据
 
 ### 存储路径（环境自适应）
 
-首次使用时，用 Bash 按以下优先级解析出 `$DATA_DIR`，并 `mkdir -p` 创建：
+首次使用时，用 Bash 按以下优先级解析出 `$DATA_DIR`，并 `mkdir -p` 创建。**OpenClaw（龙虾）是本 skill 的首要目标平台**，因此检测到龙虾环境时直接锁死老路径，保证数据无缝继承：
 
 ```bash
 DATA_DIR="${SOCIAL_COACH_DATA:-}"
-[ -z "$DATA_DIR" ] && [ -n "$CLAUDE_PROJECT_DIR" ] && DATA_DIR="$CLAUDE_PROJECT_DIR/.social-coach"
+# OpenClaw/龙虾：clawhub 在 PATH 或 ~/.openclaw 已存在 → 强制走老路径
+[ -z "$DATA_DIR" ] && command -v clawhub >/dev/null 2>&1 && DATA_DIR="$HOME/.openclaw/workspace/memory/social-coach"
 [ -z "$DATA_DIR" ] && [ -d "$HOME/.openclaw" ] && DATA_DIR="$HOME/.openclaw/workspace/memory/social-coach"
+# Claude Code 项目内
+[ -z "$DATA_DIR" ] && [ -n "$CLAUDE_PROJECT_DIR" ] && DATA_DIR="$CLAUDE_PROJECT_DIR/.social-coach"
+# 通用 fallback
 [ -z "$DATA_DIR" ] && DATA_DIR="$HOME/.social-coach"
 mkdir -p "$DATA_DIR" && echo "DATA_DIR=$DATA_DIR"
 ```
+
+优先级解释：
+- `SOCIAL_COACH_DATA` 环境变量始终最高（用户显式覆盖）
+- 龙虾用户（`clawhub` 命令存在 或 `~/.openclaw` 已存在）→ 100% 走 `~/.openclaw/workspace/memory/social-coach/`，与原版兼容
+- 仅 Claude Code 用户 → 项目隔离的 `$CLAUDE_PROJECT_DIR/.social-coach/`
+- 都不是 → `~/.social-coach/` 通用兜底
 
 把检测出的实际路径告诉用户一次（"数据存储在 `<path>`"），后续所有读写都基于这个路径。
 
