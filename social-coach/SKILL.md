@@ -134,21 +134,14 @@ ID=$(printf "INV-%03d" $((N+1)))
 5. 基于本次记录 + 历史数据，输出 **"你下次可以做的1个小改变"**
 6. 如果用户自我感受 ≤ 3，主动触发 `/心态` 流程
 
-**JSONL 记录格式：**
-```json
-{"id":"INV-001","date":"2026-05-03","target":"徒步女生","familiarity":"见过1-2次","method":"线上","content":"周末一起去爬山？","response":"接受","selfScore":7,"keyPoint":"共同兴趣切入","note":""}
-```
+**JSONL 字段定义** → 完整 schema（含类型/枚举/示例）见 [field-guide.md](references/field-guide.md#邀约记录-invitationsjsonl)。本文件不再列出完整字段，避免维护漂移。
 
 ### 2. /破冰
 
 提示用户注明：真实场景 or 模拟。
 
 **真实场景：**
-- 记录到 `interactions.jsonl`（接触阶段数据）
-- 记录字段（JSONL 格式）：
-```json
-{"id":"INT-001","date":"YYYY-MM-DD","type":"破冰","scene":"场景描述","target":"对象代号","myAction":"你的话术/行为","theirReaction":"对方反应","selfScore":7,"isSimulated":false}
-```
+- 记录到 `interactions.jsonl`，字段 schema 见 [field-guide.md](references/field-guide.md#接触记录-interactionsjsonl)
 
 **模拟场景：**
 - AI 根据用户画像生成 3 个破冰方案，格式：
@@ -326,6 +319,6 @@ AI 扮演对方进行对话练习。
 
 ## 参考文档
 
-- [记录字段详细说明](references/field-guide.md)
-- [统计计算逻辑](references/analytics.md)
-- [心态干预策略](references/mindset.md)
+- [field-guide.md](references/field-guide.md) — **所有 4 类记录的 canonical schema**（字段名/类型/枚举/示例），写入前必查
+- [analytics.md](references/analytics.md) — 成功率、模式识别、进步曲线的计算公式
+- [mindset.md](references/mindset.md) — /心态 三级干预策略
