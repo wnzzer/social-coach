@@ -1,8 +1,6 @@
 ---
 name: social-coach
-description: >
-  数据驱动的撩妹社交教练，通过记录真实邀约数据发现行为模式、迭代交往策略。
-  触发：用户提到撩妹、追人、约会、搭讪、破冰、邀约、被拒、约会复盘、聊天技巧、情感咨询、对象不回消息等社交/恋爱场景。
+description: 数据驱动的社交/恋爱成长教练，记录真实邀约数据迭代交往策略，反 PUA。Use when 用户提到 撩妹、追人、约会、搭讪、破冰、邀约、被拒、约会复盘、聊天技巧、情感咨询、对象不回消息、表白、心态崩、暗恋、相亲；或 dating coach、ask out、got rejected、ghosting、cold approach 等英文场景。
 ---
 
 # Social Coach - 数据驱动的社交成长教练
