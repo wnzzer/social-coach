@@ -8,7 +8,7 @@
 
 你约人出去过吗？结果怎么样？还记得上次聊天聊到哪了吗？大概率不记得。
 
-Social Coach 会帮你：
+撩妹 Skill 会帮你：
 - 📊 记下每一次邀约的细节和结果，像 Git log 一样可追溯
 - 🧠 当你连着被拒心态崩了，它比你的兄弟更早发现，并拉你一把
 - 📈 过个两周回头看——卧槽，我居然进步了
@@ -34,18 +34,22 @@ Social Coach 会帮你：
 | `/复盘 [代号]` | 复盘某次邀约 |
 | `/心态` | 情绪管理 |
 | `/统计` | 阶段性数据报告 |
+| `/修正 [ID]` | 修改已写入的记录 |
+| `/删除 [ID]` | 删除已写入的记录 |
 
 ## 安装
 
 ```bash
-clawhub install social-coach
+clawhub install liaomei-skill
 ```
 
-或手动将 `social-coach/` 目录放入 OpenClaw skills 目录。
+或手动将 `liaomei-skill/` 目录放入 OpenClaw skills 目录。
+
+> **v1.x 用户升级提示**：本项目原名 `social-coach`，v2.0.0 起改名为 `liaomei-skill`。老用户的数据会在首次使用时自动从 `~/.openclaw/workspace/memory/social-coach/` 迁移到 `~/.openclaw/workspace/memory/liaomei-skill/`，无需手工操作。
 
 ## 数据存储
 
-所有用户数据存储在 `~/.openclaw/workspace/memory/social-coach/` 下，完全本地，不上传任何外部服务。
+所有用户数据存储在 `~/.openclaw/workspace/memory/liaomei-skill/` 下，完全本地，不上传任何外部服务。
 
 ## 贡献指南
 
